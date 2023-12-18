@@ -1,0 +1,22 @@
+<p class="display-4 ml-5">Products</p>
+<div class="container">
+  <div class="row">
+    <% @products.each do |product| %>
+      <% cache product do  %>
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><%= product.name %></h5>
+              <p class="card-text"><%= product.price %></p>
+              <p class="card-text"><%= product.description %></p>
+              <%= button_to "Show Product",product_path(product.id), class: "btn btn-primary", method: :get %>  
+             
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+   <%= link_to "New Product", new_product_path %>
+   <%= button_to "Sign out", destroy_user_session_path, class: "btn btn-outline-danger sign-out-btn", :method => :delete  %>
+</div>

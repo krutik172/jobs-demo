@@ -1,0 +1,5 @@
+daily_product_report:
+  cron: "0 0 * * *"  # Cron expression for daily execution (midnight)
+  class: "ProductReportWorker"
+  queue: "reports"
+  description: "Generate daily product reports"
