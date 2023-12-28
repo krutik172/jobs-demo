@@ -67,9 +67,8 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: "smtp.gmail.com",
     port: 587,
-    domain: "example.com",
     user_name: "kthaker17@gmail.com",
-    password: "",
+    password: "xcoidtpwaizbduaz",
     authentication: "plain",
     enable_starttls_auto: true,
     open_timeout: 5,
@@ -77,6 +76,9 @@ Rails.application.configure do
   }
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
+  # config/environments/development.rb
+  host = 'localhost:3000'
+  config.action_mailer.default_url_options = { :host => 'localhost:3000', protocol: 'http' }
 
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true

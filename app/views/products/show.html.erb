@@ -2,10 +2,91 @@
     <h1>Product <%= @product.name %></h1>
     <p>description : <%= @product.description %> </p>
     <p> price <%= @product.price %></p>
+    <p> Status : <%= @product.status %>
     <br/>
     <%= link_to "Edit Product", edit_product_path(@product), class: "btn btn-outline-success mb-3" %>
     <%= button_to "Delete Product", product_path(@product),
                                     data:{confirm:"ARE YOU SURE?"}, 
                                     :method => :delete, class: "btn btn-outline-danger sign-out-btn" if current_user.products.include?(@product) %>
-        
-</div>
+<%
+=begin%>
+ <%= form_with(url: purchase_product_path, method: :post) do |form| %>
+ <div class="field">
+    <%= form.label :card_number, 'Card Number' %>
+    <%= form.text_field :card_number, placeholder: 'Card Number' %>
+  </div>
+    <input type="hidden" name="stripeToken" id="stripeToken" />
+  <div class="field">
+    <%= form.label :expiry_date, 'Expiry Date' %>
+    <%= form.date_field :expiry_date, placeholder: 'Expiry Date' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :cvc, 'CVC' %>
+    <%= form.password_field :cvc, placeholder: 'CVC' %>
+  </div>
+
+  <!-- Add other necessary form fields -->
+
+  <%= form.hidden_field :product_id, value: @product.id %>
+
+  <div class="actions">
+    <%= form.submit 'Pay Now', class: 'btn btn-primary' %>
+  </div>
+<% end %> 
+<%
+=end%>
+
+<%= form_tag purchase_product_path, id: "payment-form" do %>
+  <label class="amount">
+      <span><%= @product.price %></span>
+  </label>
+
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="submit-payment"
+    data-key="<%= Rails.application.credentials.stripe_publishable_key %>"
+    data-description="A month's subscription"
+    data-amount="<%= @product.price %>"
+    data-locale="auto">
+  </script>
+<% end %>
+
+<script>
+ var stripe = Stripe('<%= Rails.application.credentials.stripe_publishable_key %>');
+ var elements = stripe.elements();
+
+  var card = elements.create('card');
+  card.mount('#card-element');
+
+  var form = document.getElementById('payment-form');
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    stripe.createPaymentMethod({
+      type: 'card',
+      card: card,
+      billing_details: {
+        // Include billing details if required
+      }
+    }).then(function(result) {
+      if (result.error) {
+        // Handle errors
+      } else {
+        // On success, send the payment method to the server
+        fetch('/process-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ payment_method: result.paymentMethod.id }),
+        }).then(function(response) {
+          return response.json();
+        }).then(function(result) {
+          // Handle the server response accordingly
+          console.log(result);
+        });
+      }
+    });
+  });
+</script>

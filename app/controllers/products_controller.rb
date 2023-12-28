@@ -43,6 +43,16 @@ class ProductsController < ApplicationController
     end
   end
 
+  def purchase
+    @product = Product.find(params[:id])
+    token = params[:stripeToken] # Retrieve the token from params
+
+    # Queue purchase process as a delayed job
+    PurchaseJob.perform_later(current_user, @product, token)
+
+    redirect_to @product, notice: 'Purchase process initiated.'
+  end
+
   private
 
   def product_params

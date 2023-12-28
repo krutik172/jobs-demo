@@ -1,0 +1,6 @@
+product_report_job:
+  cron: "*/5 * * * *"  
+  class: ProductReportWorker
+  queue: reports
+  args: []
+

@@ -4,10 +4,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   has_many :products
+  has_many :purchase_histories
   after_create :welcome_email
 
   def welcome_email
-    binding.pry
     EmailNotificationWorker.perform_async(self.id)
   end
 end

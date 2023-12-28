@@ -51,6 +51,8 @@ gem 'delayed_job_active_record'
 gem 'resque'
 gem 'resque-scheduler'
 gem 'pry'
+
+gem 'stripe'
 # Use Sass to process CSS
 # gem "sassc-rails"
 
